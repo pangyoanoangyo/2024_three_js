@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Three.js GLTF Loader</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/loaders/GLTFLoader.js"></script>
+    <script>
+        // Basic three.js setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Adding light to the scene
+        const light = new THREE.DirectionalLight(0xffffff, 5);
+        light.position.set(10, 10, 10).normalize();
+        scene.add(light);
+
+        // Adding OrbitControls
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true; // Enable damping (inertia)
+        controls.dampingFactor = 0.25; // Damping factor
+        controls.rotateSpeed = 0.5; // Control rotation speed
+        controls.zoomSpeed = 1.2; // Control zoom speed
+        controls.panSpeed = 0.8; // Control pan speed
+        controls.screenSpacePanning = false;
+        controls.maxPolarAngle = Math.PI / 2;
+
+        // Loading GLTF model
+        const loader = new THREE.GLTFLoader();
+        loader.load('./idistower.glb', function (gltf) {
+            const model = gltf.scene;
+            model.rotation.y = Math.PI; // Rotate the model 180 degrees
+            scene.add(model);
+
+            // Center the camera on the object
+            const box = new THREE.Box3().setFromObject(model);
+            const center = box.getCenter(new THREE.Vector3());
+            const size = box.getSize(new THREE.Vector3());
+
+            camera.position.set(center.x, center.y, size.z * 1); // Adjust the z position as needed
+            camera.lookAt(center);
+
+            renderer.render(scene, camera);
+        }, undefined, function (error) {
+            console.error(error);
+        });
+
+        // Function to log camera position
+        function logCameraPosition() {
+            console.log(`camera.position.z = ${camera.position.z}`);
+            console.log(`camera.position.x = ${camera.position.x}`);
+            console.log(`camera.position.y = ${camera.position.y}`);
+        }
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update(); // Update controls
+            logCameraPosition(); // Log camera position
+            renderer.render(scene, camera);
+        }
+        animate();
+    </script>
+</body>
+</html>
