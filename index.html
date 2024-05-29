@@ -21,9 +21,15 @@
         document.body.appendChild(renderer.domElement);
 
         // Adding light to the scene
-        const light = new THREE.DirectionalLight(0xffffff, 5);
+        const light = new THREE.DirectionalLight(0xffffff, 2.5);
         light.position.set(10, 10, 10).normalize();
         scene.add(light);
+
+        
+        // Adding light to the scene
+        const light2 = new THREE.DirectionalLight(0xffffff, 5);
+        light2.position.set(-10, -10, -10).normalize();
+        scene.add(light2);
 
         // Adding OrbitControls
         const controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -33,7 +39,7 @@
         controls.zoomSpeed = 1.2; // Control zoom speed
         controls.panSpeed = 0.8; // Control pan speed
         controls.screenSpacePanning = false;
-        controls.maxPolarAngle = Math.PI / 2;
+        controls.maxPolarAngle = Math.PI / 3;
 
         // Loading GLTF model
         const loader = new THREE.GLTFLoader();
@@ -47,7 +53,7 @@
             const center = box.getCenter(new THREE.Vector3());
             const size = box.getSize(new THREE.Vector3());
 
-            camera.position.set(center.x, center.y, size.z * 1); // Adjust the z position as needed
+            camera.position.set(center.x, center.y, size.z * 2); // Adjust the z position as needed
             camera.lookAt(center);
 
             renderer.render(scene, camera);
@@ -67,6 +73,9 @@
             requestAnimationFrame(animate);
             controls.update(); // Update controls
             logCameraPosition(); // Log camera position
+            scene.rotation.x += 0.000;
+            scene.rotation.y -= 0.005;
+            //scene.rotation.z += 0.01;
             renderer.render(scene, camera);
         }
         animate();
