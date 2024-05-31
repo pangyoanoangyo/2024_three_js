@@ -16,7 +16,7 @@
             text-align: center;
         }
         h1 {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
         .hover-text {
             font-size: 24px;
@@ -33,7 +33,7 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="hover-text" onclick="location.reload()" style="onm">아이디스타워 - 3D</h1> <!-- 제목을 클릭하면 새로고침 -->
+        <h1 class="hover-text mt-5" onclick="location.reload()" style="onm">아이디스타워 - 3D</h1> <!-- 제목을 클릭하면 새로고침 -->
         <div class="btn-group btn-group-lg" role="group">
             <button type="button" class="btn btn-primary" onclick="location.reload()">전체</button>
             <button type="button" class="btn btn-secondary" onclick="changeBuilding(b2f)">지하2층 주차장</button>
@@ -47,7 +47,7 @@
     <script>
         // Basic three.js setup
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(47, window.innerWidth / window.innerHeight, 1, 1000);
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
         const renderer = new THREE.WebGLRenderer();
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.outputEncoding = THREE.sRGBEncoding;
@@ -75,10 +75,10 @@
         controls.maxPolarAngle = Math.PI / 3;
 
         // Define model paths and camera positions
-        const all = ['./idistower2.glb', -18];
-        const b2f = ['./20240530_idis_b2_parking.glb', -55];
-        const b3f = ['./20240530_idis_b3_parking.glb', -50];
-        const b4f = ['./20240530_idis_b4_parking.glb', -50];
+        const all = ['./20240530_idistower.glb', -30];
+        const b2f = ['./20240530_idis_b2_parking.glb', -100];
+        const b3f = ['./20240530_idis_b3_parking.glb', -100];
+        const b4f = ['./20240530_idis_b4_parking.glb', -100];
 
         let currentModel;
         const loader = new THREE.GLTFLoader();
@@ -89,7 +89,8 @@
             }
             loader.load(url, function (gltf) {
                 currentModel = gltf.scene;
-                currentModel.rotation.y = Math.PI;
+                //currentModel.rotation.y = Math.PI;
+                currentModel.rotation.y = 0; // 모델의 회전 각도를 0으로 설정
                 scene.add(currentModel);
 
                 // 카메라 위치 변경
@@ -120,7 +121,7 @@
             controls.update();
             renderer.render(scene, camera);
             scene.rotation.x += 0.000;
-            scene.rotation.y -= 0.002;
+            scene.rotation.y -= 0.001;
         }
         animate();
     </script>
