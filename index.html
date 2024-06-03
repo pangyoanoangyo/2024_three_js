@@ -5,10 +5,19 @@
     <title>아이디스타워 - 3D</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Helvetica:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+    
     <style>
-        body { 
-            margin: 0; 
-            font-family: 'Roboto', sans-serif; /* 폰트 변경 */
+        body {
+            font-family: "Noto Sans KR", sans-serif;
+        }
+        .hover-text:hover {
+            cursor: pointer;
+            text-decoration: underline;
         }
         canvas { display: block; }
         .container {
@@ -24,23 +33,80 @@
             transition: color 0.3s;
             cursor: pointer;
         }
-
         .hover-text:hover {
             color: red;
         }
-        
+        footer {
+            background-color: #f8f9fa;
+            padding: 20px 0;
+        }
+        .footer-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        .footer-nav img {
+            width: 30px;
+        }
+        .footer-nav .navbar-text {
+            font-size: 14px;
+        }
+        .footer-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 10px;
+        }
+        .footer-nav ul li {
+            display: inline;
+        }
+        .footer-nav ul li a {
+            color: black;
+            text-decoration: none;
+        }
+        .footer-nav ul li a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
-<body>
-    <div class="container">
-        <h1 class="hover-text mt-5" onclick="location.reload()" style="onm">아이디스타워 - 3D</h1> <!-- 제목을 클릭하면 새로고침 -->
-        <div class="btn-group btn-group-lg" role="group">
-            <button type="button" class="btn btn-primary" onclick="location.reload()">전체</button>
-            <button type="button" class="btn btn-secondary" onclick="changeBuilding(b2f)">지하2층 주차장</button>
-            <button type="button" class="btn btn-secondary" onclick="changeBuilding(b3f)">지하3층 주차장</button>
-            <button type="button" class="btn btn-secondary" onclick="changeBuilding(b4f)">지하4층 주차장</button>
-        </div>
+<body>  
+    <div class="container-fluid">
+        <nav class="navbar navbar-expand-sm bg-light navbar-light">
+            <div class="container-fluid">
+                <img src="idis_logo.png" alt="Logo" style="width:30px;">
+                <span class="navbar-text ml-2" onclick="location.reload()">
+                    아이디스타워 / IDIS Tower 3D
+                </span>
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <button type="button" class="btn btn-sm btn-primary" onclick="location.reload()">전체</button>
+                    </li>
+                    <li class="nav-item">
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="changeBuilding(b2f)">지하2층 주차장</button>
+                    </li>
+                    <li class="nav-item">
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="changeBuilding(b3f)">지하3층 주차장</button>
+                    </li>
+                    <li class="nav-item">
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="changeBuilding(b4f)">지하4층 주차장</button>
+                    </li>
+                </ul>
+            </div>
+        </nav>
     </div>
+
+    <!-- 3D 오브젝트를 렌더링할 영역 -->
+    <div id="3d-container"></div>
+
+    <footer>
+        <div class="container text-center">
+            <p>아이디스타워 | IDIS Tower</p>
+            
+        </div>
+    </footer>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/loaders/GLTFLoader.js"></script>
@@ -53,7 +119,7 @@
         renderer.outputEncoding = THREE.sRGBEncoding;
         scene.background = new THREE.Color("white");
 
-        document.body.appendChild(renderer.domElement);
+        document.getElementById('3d-container').appendChild(renderer.domElement);
 
         // Adding light to the scene
         const light = new THREE.DirectionalLight(0xffffff, 2);
@@ -89,7 +155,6 @@
             }
             loader.load(url, function (gltf) {
                 currentModel = gltf.scene;
-                //currentModel.rotation.y = Math.PI;
                 currentModel.rotation.y = 0; // 모델의 회전 각도를 0으로 설정
                 scene.add(currentModel);
 
@@ -110,7 +175,6 @@
             let backgroundColor = "black"; // 검정색 배경
             loadModel(building[0], building[1], backgroundColor);
         }
-
 
         // Load initial model
         loadModel(all[0], all[1], "white");
