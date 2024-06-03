@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Somethings - 3D</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            margin: 0; 
+            font-family: 'Roboto', sans-serif; /* 폰트 변경 */
+        }
+        canvas { display: block; }
+        .container {
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 25px;
+        }
+        .hover-text {
+            font-size: 24px;
+            color: black;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        .hover-text:hover {
+            color: red;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="hover-text mt-5" onclick="location.reload()">Somethings - 3D</h1> <!-- 제목을 클릭하면 새로고침 -->
+        <div class="btn-group btn-group-lg" role="group">
+            <button type="button" class="btn btn-primary" onclick="location.reload()">Sword</button>
+            <button type="button" class="btn btn-secondary" onclick="changeBuilding(b2f)">미정</button>
+            <button type="button" class="btn btn-secondary" onclick="changeBuilding(b3f)">미정</button>
+            <button type="button" class="btn btn-secondary" onclick="changeBuilding(b4f)">미정</button>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/loaders/GLTFLoader.js"></script>
+    <script>
+        // Basic three.js setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.outputEncoding = THREE.sRGBEncoding;
+        scene.background = new THREE.Color("white");
+
+        document.body.appendChild(renderer.domElement);
+
+        // Adding light to the scene
+        const light = new THREE.DirectionalLight(0xffffff, 2);
+        light.position.set(10, 10, 10).normalize();
+        scene.add(light);
+
+        const light2 = new THREE.DirectionalLight(0xffffff, 2);
+        light2.position.set(-10, -10, -10).normalize();
+        scene.add(light2);
+
+        // Adding OrbitControls
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.25;
+        controls.rotateSpeed = 0.5;
+        controls.zoomSpeed = 1.2;
+        controls.panSpeed = 0.8;
+        controls.screenSpacePanning = false;
+        controls.maxPolarAngle = Math.PI / 3;
+
+        // Define model paths and camera positions
+        const all = ['./sword.glb', -300];
+        const b2f = ['./20240530_idis_b2_parking.glb', -100];
+        const b3f = ['./20240530_idis_b3_parking.glb', -100];
+        const b4f = ['./20240530_idis_b4_parking.glb', -100];
+
+        let currentModel;
+        const loader = new THREE.GLTFLoader();
+
+        function loadModel(url, cameraZ, backgroundColor) {
+            if (currentModel) {
+                scene.remove(currentModel);
+            }
+            loader.load(url, function (gltf) {
+                currentModel = gltf.scene;
+                //currentModel.rotation.y = Math.PI;
+                currentModel.rotation.y = 0; // 모델의 회전 각도를 0으로 설정
+                scene.add(currentModel);
+
+                // 카메라 위치 변경
+                camera.position.set(0, 0, cameraZ);
+                camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+                // 배경 색상 변경
+                scene.background = new THREE.Color(backgroundColor);
+
+                renderer.render(scene, camera);
+            }, undefined, function (error) {
+                console.error(error);
+            });
+        }
+
+        function changeBuilding(building) {
+            let backgroundColor = "black"; // 검정색 배경
+            loadModel(building[0], building[1], backgroundColor);
+        }
+
+
+        // Load initial model
+        loadModel(all[0], all[1], "white");
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+            scene.rotation.x += 0.000;
+            scene.rotation.y -= 0.01;
+        }
+        animate();
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
