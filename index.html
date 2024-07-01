@@ -92,6 +92,9 @@
                     <li class="nav-item">
                         <button type="button" class="btn btn-sm btn-secondary" onclick="changeBuilding(b4f)">지하4층 주차장</button>
                     </li>
+                    <li class="nav-item">
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="changeBuilding(woori)">우리은행건물</button>
+                    </li>
                 </ul>
             </div>
         </nav>
@@ -145,6 +148,7 @@
         const b2f = ['./20240530_idis_b2_parking.glb', -100];
         const b3f = ['./20240530_idis_b3_parking.glb', -100];
         const b4f = ['./20240530_idis_b4_parking.glb', -100];
+        const woori = ['./20240701_woori_deploy.glb', -100];
 
         let currentModel;
         const loader = new THREE.GLTFLoader();

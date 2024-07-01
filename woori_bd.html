@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>IDIS-3D-Building</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            height: 100%;
+        }
+        
+        .topnav {
+            overflow: hidden;
+            background-color: #333;
+        }
+        
+        .topnav a {
+            float: left;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 17px;
+        }
+        
+        .topnav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        
+        .topnav a.split {
+            float: right;
+            background-color: #04AA6D;
+            color: white;
+        }
+        
+        #map_3d {
+            border: 0.5px solid black; 
+            margin: 0;
+            padding: 0;
+            height: 100%; /* 높이 지정 */
+        }
+        
+        #floor_layer a {
+            margin-bottom: 10px; /* 버튼 간 간격 추가 */
+        }
+    </style>
+</head>
+<body>
+    <div class="topnav bg-light">
+        <a class="active text-dark" onclick="location.reload()"><h3>WooriBank HQ</h3></a>       
+    </div>   
+    <div class="container-fluid">
+        <div class="row">            
+            <div id="floor_layer" class="col-md-2 col-sm-12">
+                <h3 class="mt-4">CCTV 3D MAP</h3>
+                <p>Click on the building to view the CCTV</p>
+                <a class="active btn btn-primary" href="/woori_bd.html">원래대로</a>
+                <a class="active btn btn-danger" onclick="changeBuilding(line_bd)">Line Building</a>
+                <div>
+                    <a class="btn btn-secondary mt-2" onclick="changePage('B1')">B1</a>
+                    <a class="btn btn-secondary mt-2" onclick="changePage('B2')">B2</a>
+                    <a class="btn btn-secondary mt-2" onclick="changePage('B3')">B3</a>
+                    <a class="btn btn-secondary mt-2" onclick="changePage('B4')">B4</a>
+                    <a class="btn btn-secondary mt-2" onclick="changePage('B5')">B5</a>
+                    <a class="btn btn-secondary mt-2" onclick="changePage('B6')">B6</a>                    
+                    <a class="btn btn-secondary mt-2" onclick="changePage('1F')">1F</a>
+                    <a class="btn btn-secondary mt-2" onclick="changePage('2F')">2F</a>
+                    <a class="btn btn-secondary mt-2" onclick="changePage('3F')">3F</a>
+                    <a class="btn btn-secondary mt-2" onclick="changePage('4F')">4F</a>
+                    <a class="btn btn-secondary mt-2" onclick="changePage('5F')">5F</a>
+                    <a class="btn btn-secondary mt-2" onclick="changePage('6F')">6F</a>
+                    <a class="btn btn-secondary mt-2" onclick="changePage('7F')">7F</a>
+                    <a class="btn btn-secondary mt-2" onclick="changePage('8F')">8F</a>
+                    <a class="btn btn-secondary mt-2" onclick="changePage('9F')">9F</a>
+                    <a class="btn btn-secondary mt-2" onclick="changePage('10F')">10F</a>
+                    <a class="btn btn-secondary mt-2" onclick="changePage('11F')">11F</a>
+                    <a class="btn btn-secondary mt-2" onclick="changePage('12F')">12F</a>
+                    <a class="btn btn-secondary mt-2" onclick="changePage('13F')">13F</a>
+                    <a class="btn btn-secondary mt-2" onclick="changePage('14F')">14F</a>
+                    <a class="btn btn-secondary mt-2" onclick="changePage('15F')">15F</a>
+                    <a class="btn btn-secondary mt-2" onclick="changePage('16F')">16F</a>
+                    <a class="btn btn-secondary mt-2" onclick="changePage('17F')">17F</a>
+                    <a class="btn btn-secondary mt-2" onclick="changePage('18F')">18F</a>
+                    <a class="btn btn-secondary mt-2" onclick="changePage('19F')">19F</a>
+                    <a class="btn btn-secondary mt-2" onclick="changePage('20F')">20F</a>
+                    <a class="btn btn-secondary mt-2" onclick="changePage('21F')">21F</a>
+                    <a class="btn btn-secondary mt-2" onclick="changePage('22F')">22F</a>
+                    <a class="btn btn-secondary mt-2" onclick="changePage('23F')">23F</a>
+                    <a class="btn btn-secondary mt-2" onclick="changePage('24F')">24F</a>
+                    
+
+
+                    
+                </div>
+            </div>
+            <div id="map_3d" class="col-md-10 col-sm-12">
+                <div id="map_title" class="text-center" style="display:none">
+                    <h3 class="mt-4">층별 상세도</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/loaders/GLTFLoader.js"></script>
+    <script>
+        // Basic three.js setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.outputEncoding = THREE.sRGBEncoding;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.5; // 노출 감소
+        scene.background = new THREE.Color("white");
+        document.getElementById("map_3d").appendChild(renderer.domElement);
+    
+        // Adding light to the scene
+        const light = new THREE.DirectionalLight(0xffffff, 3); // 강도 감소
+        light.position.set(1, 1, 1).normalize();
+        scene.add(light);
+    
+        const light2 = new THREE.DirectionalLight(0xffffff, 3); // 강도 감소
+        light2.position.set(-1, -1, -1).normalize();
+        scene.add(light2);
+    
+        const ambientLight = new THREE.AmbientLight(0x404040, 4); // 주변광 강도 증가
+        scene.add(ambientLight);
+    
+        // Adding OrbitControls
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.25;
+        controls.rotateSpeed = 0.5;
+        controls.zoomSpeed = 1.2;
+        controls.panSpeed = 0.8;
+        controls.screenSpacePanning = true;
+        controls.maxPolarAngle = Math.PI;
+        controls.minDistance = 1;
+        controls.maxDistance = 200;
+    
+        // Define model paths and camera positions
+        const all = ['./20240701_woori_deploy5.glb', 20];
+        const line_bd = ['./20240701_woori_deploy4.glb', 20];
+    
+        let currentModel;
+        const loader = new THREE.GLTFLoader();
+    
+        function loadModel(url, cameraZ, backgroundColor) {
+            if (currentModel) {
+                scene.remove(currentModel);
+            }
+            loader.load(url, function (gltf) {
+                currentModel = gltf.scene;
+                currentModel.rotation.y = 270;
+                
+                currentModel.scale.set(1.8, 1.8, 1.8); // 모델 크기 증가
+                scene.add(currentModel);
+    
+                // 카메라 위치 변경 (아래에서 위로 보는 형태)
+                camera.position.set(5, 5, 90);
+                camera.lookAt(new THREE.Vector3(0, 20, 0));
+    
+                scene.background = new THREE.Color(backgroundColor);
+    
+                // 모델의 모든 메시에 대해 재질 조정
+                currentModel.traverse((child) => {
+                    if (child.isMesh) {
+                        child.material.roughness = 0.2; // 거칠기 증가
+                        child.material.metalness = 0.5; // 금속성 감소
+                        child.material.envMapIntensity = 1; // 환경 맵 강도 감소
+                    }
+                });
+    
+                renderer.render(scene, camera);
+    
+                console.log("Model Position:", currentModel.position);
+                console.log("Camera Position:", camera.position);
+                console.log("Light Position:", light.position);
+                console.log("Light2 Position:", light2.position);
+    
+                controls.addEventListener('change', () => {
+                    console.log("Updated Camera Position:", camera.position);
+                    console.log("Updated Camera LookAt:", camera.getWorldDirection(new THREE.Vector3()));
+                });
+            }, undefined, function (error) {
+                console.error(error);
+            });
+        }
+    
+        function changeBuilding(building) {
+            let backgroundColor = "white";
+            loadModel(building[0], building[1], backgroundColor);
+        }
+
+        function changePage(floor) {
+            const mapName = `/woori_bd/${floor}.jpg`;
+            const map3dElement = document.getElementById("map_3d");
+            const mapTitle = document.getElementById("map_title");
+        
+            map3dElement.innerHTML = `
+            <div id="map_title" class="text-center" style="display:block">
+                <h3 class="text-center mt-4">우리은행 본점 ${floor} 평면도</h3>
+                <img src='${mapName}' alt='${floor}' style="width:80%;height:auto;">
+            </div>
+            
+            
+        `;
+        }
+        
+    
+        // Load initial model
+        loadModel(all[0], all[1], "black");
+    
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+            scene.rotation.x += 0.000;
+            scene.rotation.y -= 0.001;
+        }
+        animate();
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
